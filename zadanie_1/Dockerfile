@@ -26,5 +26,9 @@ RUN wget -q https://services.gradle.org/distributions/gradle-8.12.1-bin.zip \
 ENV PATH="/opt/gradle-8.12.1/bin:${PATH}"
 
 WORKDIR /app
+COPY . /app/
 
+RUN gradle build --no-daemon
+
+CMD ["gradle", "run", "--no-daemon"]
 
