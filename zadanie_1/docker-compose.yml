@@ -1,0 +1,8 @@
+services:
+  zadanie1-app:
+    build: .
+
+    image: franciszektrela/ebiznes-zadanie1:latest
+
+    container_name: kotlin_app_container
+
