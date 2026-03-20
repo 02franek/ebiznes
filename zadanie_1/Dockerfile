@@ -19,7 +19,12 @@ RUN wget -q https://github.com/JetBrains/kotlin/releases/download/v2.3.20/kotlin
 	&& rm kotlin-compiler-2.3.20.zip
 ENV PATH="/opt/kotlinc/bin:${PATH}"
 
+# Install Gradle
+RUN wget -q https://services.gradle.org/distributions/gradle-8.12.1-bin.zip \
+	&& unzip -q gradle-8.12.1-bin.zip -d /opt/ \
+	&& rm gradle-8.12.1-bin.zip
+ENV PATH="/opt/gradle-8.12.1/bin:${PATH}"
 
-
+WORKDIR /app
 
 
