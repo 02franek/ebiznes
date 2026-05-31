@@ -29,3 +29,33 @@ Kod: [Link do zadania 1](https://github.com/02franek/ebiznes/tree/main/zadanie_1
 ###
 Kod: [Link do zadania 2](https://github.com/02franek/ebiznes/tree/main/zadanie_2/ebiznes-scala)
 ##
+
+### Zadanie 3 Kotlin Ktor
+
+✅ 3.0 Należy stworzyć aplikację kliencką w Kotlinie we frameworku Ktor, która pozwala na przesyłanie wiadomości na platformę Discord [Link do commita 1](https://github.com/02franek/ebiznes/commit/955f14eca37f2fa5efa4a155eefbb6fded842141)
+
+✅ 3.5 Aplikacja jest w stanie odbierać wiadomości użytkowników z platformy Discord skierowane do aplikacji (bota) [Link do commita 2](https://github.com/02franek/ebiznes/commit/2a97b7666227ce1bb59d91ac6e8e26bac63af87f)
+
+✅ 4.0 Zwróci listę kategorii na określone żądanie użytkownika [Link do commita 3](https://github.com/02franek/ebiznes/commit/ef6bda31bb61b5d4af91de552ce83646707513ee)
+
+✅ 4.5 Zwróci listę produktów wg żądanej kategorii [Link do commita 4](https://github.com/02franek/ebiznes/commit/8af3b2d30f6a1ebaa63f200884c3dc449b64578e)
+
+❌ 5.0 Aplikacja obsłuży dodatkowo jedną z platform: Slack lub Messenger
+###
+Kod: [Link do zadania 3](https://github.com/02franek/ebiznes/tree/main/zadanie_3)
+##
+
+### Zadanie 4 Echo Go
+
+✅ 3.0 Należy stworzyć aplikację we frameworki echo w j. Go, która będzie miała kontroler Produktów zgodny z CRUD [Link do commita 1](https://github.com/02franek/ebiznes/commit/280597549d39c1d8b96de6d531291a70c017e426)
+
+✅ 3.5 Należy stworzyć model Produktów wykorzystując gorm oraz wykorzystać model do obsługi produktów (CRUD) w kontrolerze (zamiast listy) [Link do commita 2](https://github.com/02franek/ebiznes/commit/ced3a738ac650a29af102b20d4660c73be754ff1)
+
+✅ 4.0 Należy dodać model Koszyka oraz dodać odpowiedni endpoint [Link do commita 3](https://github.com/02franek/ebiznes/commit/8ca63bb5e4b2ce348f4f404bc9ae342c069ac315)
+
+✅ 4.5 Należy stworzyć model kategorii i dodać relację między kategorią, a produktem [Link do commita 4](https://github.com/02franek/ebiznes/commit/151f21f93d613e0178fdd6acd750aa8f6a0c67cf)
+
+✅ 5.0 Należy pogrupować zapytania w gorm’owe scope'y [Link do commita 5](https://github.com/02franek/ebiznes/commit/207e2739ed77909959848837417dc3c5ef9bc624)
+###
+Kod: [Link do zadania 4](https://github.com/02franek/ebiznes/tree/main/zadanie_4/zadanie-echo)
+##
