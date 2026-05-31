@@ -11,10 +11,17 @@ import (
 
 var db *gorm.DB
 
+type Category struct {
+	gorm.Model
+	Name string `json:"name"`
+}
+
 type Product struct {
 	gorm.Model
 	Name string `json:"name"`
 	Price float32 `json:"price"`
+	CategoryID uint `json:"category_id"`
+	Category Category `json:"category"`
 }
 
 type Cart struct {
@@ -40,7 +47,7 @@ func createProduct(c echo.Context) error {
 func getProducts(c echo.Context) error {
 	var products []Product
 
-	if result := db.Find(&products); result.Error != nil {
+	if result := db.Preload("Category").Find(&products); result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Error loading products",
 		})
@@ -147,6 +154,20 @@ func addProductToCart(c echo.Context) error {
 }
 
 
+func createCategory(c echo.Context) error {
+	category := new(Category)
+	if err := c.Bind(category); err != nil {
+		return err
+	}
+	if result := db.Create(&category); result.Error != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "Error creating category",
+		})
+	}
+	return c.JSON(http.StatusCreated, category)
+}
+
+
 func main() {
 	var err error
 
@@ -155,7 +176,7 @@ func main() {
 		panic("Couldn't establish connection with data base")
 	}
 
-	db.AutoMigrate(&Product{}, &Cart{})
+	db.AutoMigrate(&Product{}, &Cart{}, &Category{})
 
 	e := echo.New()
 
@@ -168,6 +189,8 @@ func main() {
 	e.POST("/carts", createCart)
 	e.GET("/carts/:id", getCart)
 	e.POST("/carts/:id/products/:product_id", addProductToCart)
+
+	e.POST("/categories", createCategory)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
