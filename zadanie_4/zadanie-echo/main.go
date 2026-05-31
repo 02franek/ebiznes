@@ -29,6 +29,22 @@ type Cart struct {
 	Products []Product `gorm:"many2many:cart_products;" json:"products"`
 }
 
+// gorm scopes
+
+func PriceGreaterThan(minPrice float32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("price > ?", minPrice)
+	}
+}
+
+func ByCategory(categoryID int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("category_id = ?", categoryID)
+	}
+}
+
+// controllers
+
 func createProduct(c echo.Context) error {
 	p := new(Product)
 	if err := c.Bind(p); err != nil {
@@ -46,8 +62,22 @@ func createProduct(c echo.Context) error {
 
 func getProducts(c echo.Context) error {
 	var products []Product
+	query := db.Preload("Category")
 
-	if result := db.Preload("Category").Find(&products); result.Error != nil {
+	if minPriceStr := c.QueryParam("min_price"); minPriceStr != "" {
+		if minPrice, err := strconv.ParseFloat(minPriceStr, 32); err == nil {
+			query = query.Scopes(PriceGreaterThan(float32(minPrice)))
+		}
+	}
+
+	if categoryIDStr := c.QueryParam("category_id"); categoryIDStr != "" {
+		if categoryID, err := strconv.Atoi(categoryIDStr); err == nil {
+			query = query.Scopes(ByCategory(categoryID))
+		}
+	}	
+
+
+	if result := query.Find(&products); result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "Error loading products",
 		})

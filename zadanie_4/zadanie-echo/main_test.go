@@ -181,3 +181,31 @@ func TestAddProductToCart(t *testing.T) {
 	assert.Equal(t, 1, len(updatedCart.Products))
 	assert.Equal(t, "Laptop", updatedCart.Products[0].Name)
 }
+
+func TestGetProductsWithScopes(t *testing.T) {
+	setupTestDB()
+	e := echo.New()
+
+	cat1 := Category{Name: "Cheap"}
+	cat2 := Category{Name: "Expensive"}
+	db.Create(&cat1)
+	db.Create(&cat2)
+
+	db.Create(&Product{Name: "Pen", Price: 2.0, CategoryID: cat1.ID})
+	db.Create(&Product{Name: "Notebook", Price: 5.0, CategoryID: cat1.ID})
+	db.Create(&Product{Name: "Laptop", Price: 1500.0, CategoryID: cat2.ID})
+
+	req := httptest.NewRequest(http.MethodGet, "/products?min_price=10&category_id=2", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	err := getProducts(c)
+
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rec.Code)
+	
+	response := rec.Body.String()
+	assert.Contains(t, response, "Laptop")
+	assert.NotContains(t, response, "Pen")
+	assert.NotContains(t, response, "Notebook")
+}
