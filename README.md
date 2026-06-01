@@ -59,3 +59,18 @@ Kod: [Link do zadania 3](https://github.com/02franek/ebiznes/tree/main/zadanie_3
 ###
 Kod: [Link do zadania 4](https://github.com/02franek/ebiznes/tree/main/zadanie_4/zadanie-echo)
 ##
+
+### Zadanie 5 Frontend (React+Go)
+
+✅ 3.0 W ramach projektu należy stworzyć dwa komponenty: Produkty orazPłatności; Płatności powinny wysyłać do aplikacji serwerowej dane, a w Produktach powinniśmy pobierać dane o produktach z aplikacji serwerowej [Link do commita 1](https://github.com/02franek/ebiznes/commit/dd269cec391943b0330fbfa0e59cd05a51bfbe59)
+
+✅ 3.5 Należy dodać Koszyk wraz z widokiem, należy wykorzystać routing [Link do commita 2](https://github.com/02franek/ebiznes/commit/726bfc6b4056ee45553ad2cee3155337fb0f1298)
+
+✅ 4.0 Dane pomiędzy wszystkimi komponentami powinny być przesyłane za pomocą React hooks [Link do commita 3](https://github.com/02franek/ebiznes/commit/997182adc9ddc2ef4044e33c785e82ff0ab28e90)
+
+✅ 4.5 Należy dodać skrypt uruchamiający aplikację serwerową oraz kliencką na dockerze via docker-compose [Link do commita 4](https://github.com/02franek/ebiznes/commit/30fa5598b78acd90a41c3acf0c8790eae09dda97)
+
+✅ 5.0 Należy wykorzystać axios’a oraz dodać nagłówki pod CORS [Link do commita 5](https://github.com/02franek/ebiznes/commit/30fa5598b78acd90a41c3acf0c8790eae09dda97)
+###
+Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
+##
