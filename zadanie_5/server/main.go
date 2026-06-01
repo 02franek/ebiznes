@@ -3,60 +3,91 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 )
 
 type Product struct {
 	ID int `json:"id"`
 	Name string `json:"name"`
-	Price int `json:"price"`
+	Price float64 `json:"price"`
+	Description string `json:"description"`
 }
 
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+type PaymentRequest struct {
+	Amount float64 `json:"amount"`
+	Items []any `json:"items"`
 }
 
-func productsHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+type PaymentResponse struct {
+	Success bool `json:"success"`
+	Message string `json:"message"`
+}
 
-	products := []Product{
-		{ID: 1, Name: "Headphones", Price: 300},
-		{ID: 2, Name: "Keyboard RGB", Price: 500},
-		{ID: 3, Name: "MacBook", Price: 4000},				
-	}
+var products = []Product{
+	{ ID: 1, Name: "Klawiatura RGB", Price: 300, Description: "Świeci się na wszystkie kolory tęczy"},
+	{ ID: 2, Name: "Myszka ergonomiczna", Price: 500, Description: "Śmiesznie się ją trzyma, tak pionowo"},
+	{ ID: 3, Name: "Słuchawki bezprzewodowe", Price: 100, Description: "9 na 10 programistów je poleca"},
+}
 
+func enableCORS(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next(w, r)
+	}
+}
+
+func getProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(products)
 }
 
-func paymentsHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
+func postPayments(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	if r.Method == http.MethodPost {
-		body, _ := io.ReadAll(r.Body)
-		fmt.Printf("Received payment request information: %s\n", string(body))
+	var req PaymentRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(PaymentResponse{
+			Success: false, Message: "Wrong payment request format",
+		})
+		return
+	}
+
+	if req.Amount > 0 {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status": "Payment received"}`))
+		json.NewEncoder(w).Encode(PaymentResponse{
+			Success: true, Message: "Payment realized successfully",
+		})
 	} else {
-		http.Error(w, "Method not supported", http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(PaymentResponse{
+			Success: false, Message: "Payment error",
+		})
 	}
 }
 
 func main() {
-	http.HandleFunc("/api/products", productsHandler)
-	http.HandleFunc("/api/payments", paymentsHandler)
+	http.HandleFunc("/api/products", enableCORS(getProducts))
+	http.HandleFunc("/api/payments", enableCORS(postPayments))
 
-	fmt.Println("Listening on port 8080...")
-	http.ListenAndServe(":8080", nil)
+	port := ":3001"
+	fmt.Printf("Server availalbe at http://localhost%s\n", port)
+
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
