@@ -45,6 +45,10 @@ func enableCORS(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func getProducts(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(products)
 }
@@ -80,14 +84,19 @@ func postPayments(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
-	http.HandleFunc("/api/products", enableCORS(getProducts))
-	http.HandleFunc("/api/payments", enableCORS(postPayments))
+func setupRouter() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/products", enableCORS(getProducts))
+	mux.HandleFunc("/api/payments", enableCORS(postPayments))
+	return mux
+}
 
+func main() {
+	router := setupRouter()
 	port := ":3001"
 	fmt.Printf("Server availalbe at http://localhost%s\n", port)
 
-	if err := http.ListenAndServe(port, nil); err != nil {
+	if err := http.ListenAndServe(port, router); err != nil {
 		log.Fatal(err)
 	}
 }
