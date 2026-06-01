@@ -1,34 +1,45 @@
-import { useState } from "react";
 import apiClient from "../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const Payments = () => {
-  const [status, setStatus] = useState<string>("");
+  const navigate = useNavigate();
+  const { state, clearCart } = useCart();
 
   const handlePayment = async () => {
     try {
       const res = await apiClient.post("/payments", {
-        amount: 100,
-        items: [
-          { id: 1, quantity: 2 },
-          { id: 2, quantity: 3 },
-        ],
+        amount: state.totalPrice,
+        items: state.items.map((item) => ({
+          id: item.product.id,
+          quantity: item.quantity,
+        })),
       });
 
       if (res.data.success) {
-        setStatus("Płatność została zrealizowana.");
+        clearCart();
+        alert("Płatność została zrealizowana");
+        navigate("/");
       }
     } catch (e) {
-      setStatus("Błąd płatności.");
       console.error(e);
     }
   };
 
   return (
     <div>
-      <h2>Płatności</h2>
-      <p>Należność: 100</p>
-      <button onClick={handlePayment}>Zapłać</button>
-      {status && <p>{status}</p>}
+      <h1>Płatności</h1>
+
+      {state.totalPrice > 0 ? (
+        <div>
+          <p>Należność: {state.totalPrice} PLN</p>
+          <button style={{ margin: "10px" }} onClick={handlePayment}>
+            Zapłać
+          </button>
+        </div>
+      ) : (
+        <p>Nie masz nic w koszyku.</p>
+      )}
     </div>
   );
 };
