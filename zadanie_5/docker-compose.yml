@@ -1,0 +1,14 @@
+services:
+  server:
+    build: ./server
+    ports:
+      - "3001:3001"
+    container_name: go_server
+
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    container_name: react_client
+    depends_on:
+      - server
