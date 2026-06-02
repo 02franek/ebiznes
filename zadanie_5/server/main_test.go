@@ -78,7 +78,9 @@ func TestPostPaymentsAPI(t *testing.T) {
 		}
 
 		var response PaymentResponse
-		json.NewDecoder(rr.Body).Decode(&response)
+		if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+			t.Fatalf("Failed to decode response: %v", err)
+		}
 
 		if response.Success != true {
 			t.Errorf("Expected success to be true, received %v", response.Success)
@@ -105,8 +107,9 @@ func TestPostPaymentsAPI(t *testing.T) {
 		}
 
 		var response PaymentResponse
-		json.NewDecoder(rr.Body).Decode(&response)
-
+		if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+			t.Fatalf("Failed to decode response: %v", err)
+		}
 		if response.Success != false {
 			t.Errorf("Expected success to be false, received %v", response.Success)
 		}

@@ -13,6 +13,7 @@ type Product struct {
 	Price float64 `json:"price"`
 	Description string `json:"description"`
 }
+   
 
 type PaymentRequest struct {
 	Amount float64 `json:"amount"`
@@ -50,7 +51,10 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(products)
+	if err := json.NewEncoder(w).Encode(products); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func postPayments(w http.ResponseWriter, r *http.Request) {
@@ -65,22 +69,31 @@ func postPayments(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(PaymentResponse{
+		if err := json.NewEncoder(w).Encode(PaymentResponse{
 			Success: false, Message: "Wrong payment request format",
-		})
+		}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
 	if req.Amount > 0 {
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(PaymentResponse{
+		if err := json.NewEncoder(w).Encode(PaymentResponse{
 			Success: true, Message: "Payment realized successfully",
-		})
+		}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return			
+		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(PaymentResponse{
+		if err := json.NewEncoder(w).Encode(PaymentResponse{
 			Success: false, Message: "Payment error",
-		})
+		}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return			
+		}
 	}
 }
 
