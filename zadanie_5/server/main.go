@@ -31,11 +31,13 @@ var products = []Product{
 	{ ID: 3, Name: "Słuchawki bezprzewodowe", Price: 100, Description: "9 na 10 programistów je poleca"},
 }
 
+const CONTENTTYPE = "Content-Type"
+
 func enableCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", CONTENTTYPE)
 
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
@@ -50,7 +52,7 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(CONTENTTYPE, "application/json")
 	if err := json.NewEncoder(w).Encode(products); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -58,7 +60,7 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 }
 
 func postPayments(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(CONTENTTYPE, "application/json")
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

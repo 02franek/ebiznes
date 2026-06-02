@@ -7,7 +7,7 @@ COPY main.go ./
 
 RUN go build -o api-server main.go
 
-FROM alpine:latest
+FROM alpine:3.22.4
 
 WORKDIR /app
 
