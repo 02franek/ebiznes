@@ -87,5 +87,26 @@ Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5
 
 ❌ 5.0 Należy uruchomić testy funkcjonalne na Browserstacku
 ###
-Kod: [Link do zadania 6](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
+Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
 ##
+
+### Zadanie 7 Analiza statyczna (do Zadania 5)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=02franek_ebiznes&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=02franek_ebiznes)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=02franek_ebiznes&metric=bugs)](https://sonarcloud.io/summary/new_code?id=02franek_ebiznes)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=02franek_ebiznes&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=02franek_ebiznes)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=02franek_ebiznes&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=02franek_ebiznes)
+
+✅ 3.0 Należy dodać litera do odpowiedniego kodu aplikacji serwerowej w hookach gita [Link do commita 1](https://github.com/02franek/ebiznes/commit/3184b08a266503f7321dc52e5db3b8c8e77bca12)
+
+✅ 3.5 Należy wyeliminować wszystkie bugi w kodzie w Sonarze (kod aplikacji serwerowej) [Link do commita 2](https://github.com/02franek/ebiznes/commit/2c258754b6875778478244f3466adbc8b43ce989)
+
+✅ 4.0 Należy wyeliminować wszystkie zapaszki w kodzie w Sonarze (kod aplikacji serwerowej) [Link do commita 3](https://github.com/02franek/ebiznes/commit/2c258754b6875778478244f3466adbc8b43ce989)
+
+✅ 4.5 Należy wyeliminować wszystkie podatności oraz błędy bezpieczeństwa w kodzie w Sonarze (kod aplikacji serwerowej) [Link do commita 4](https://github.com/02franek/ebiznes/commit/76b1c9a407f255afd82f42f891040c4a531377d9)
+
+✅ 5.0 Należy wyeliminować wszystkie błędy oraz zapaszki w kodzie aplikacji klienckiej [Link do commita 5](https://github.com/02franek/ebiznes/commit/2c175873bae3c3a2cc590596d447e97c2ae1db2a)
+###
+Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
+##
+
