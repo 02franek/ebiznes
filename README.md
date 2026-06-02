@@ -74,3 +74,18 @@ Kod: [Link do zadania 4](https://github.com/02franek/ebiznes/tree/main/zadanie_4
 ###
 Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
 ##
+
+### Zadanie 6 Testy (do Zadania 5)
+
+✅ 3.0 Należy stworzyć 20 przypadków testowych w CypressJS lub Selenium [Link do commita 1](https://github.com/02franek/ebiznes/commit/0d1f75f1e891540e82a6ce0a47e892fcc885a0f8)
+
+✅ 3.5 Należy rozszerzyć testy funkcjonalne, aby zawierały minimum 50 asercji [Link do commita 2](https://github.com/02franek/ebiznes/commit/0d1f75f1e891540e82a6ce0a47e892fcc885a0f8)
+
+✅ 4.0 Należy stworzyć testy jednostkowe do wybranego wcześniejszego projektu z minimum 50 asercjami [Link do commita 3](https://github.com/02franek/ebiznes/commit/c5a5703d9b5036b8e60f9c3187ad1f111731434f)
+
+✅ 4.5 Należy dodać testy API, należy pokryć wszystkie endpointy z minimum jednym scenariuszem negatywnym per endpoint [Link do commita 4](https://github.com/02franek/ebiznes/commit/26117c4a8d93a69f81dbb7f4ea1617c5d6a92f4a)
+
+❌ 5.0 Należy uruchomić testy funkcjonalne na Browserstacku
+###
+Kod: [Link do zadania 6](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
+##
