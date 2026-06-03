@@ -82,4 +82,93 @@ router.post("/register/", async (req, res) => {
   }
 });
 
+router.get("/google", (req, res) => {
+  const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+  const options = new URLSearchParams({
+    client_id: process.env.GOOGLE_CLIENT_ID!,
+    redirect_uri: "http://localhost:5000/api/auth/google/callback",
+    response_type: "code",
+    scope: "email profile",
+  });
+
+  res.redirect(`${rootUrl}?${options.toString()}`);
+});
+
+router.get("/google/callback", async (req, res) => {
+  const code = req.query.code as string;
+
+  try {
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        code,
+        redirect_uri: "http://localhost:5000/api/auth/google/callback",
+        grant_type: "authorization_code",
+      }),
+    });
+
+    const tokenData = await tokenResponse.json();
+
+    if (!tokenResponse.ok) throw new Error("Error getting token from Google");
+
+    const userResponse = await fetch(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      },
+    );
+    const googleUser = await userResponse.json();
+
+    let user = db
+      .prepare("SELECT * FROM users WHERE email = ?")
+      .get(googleUser.email) as any;
+
+    if (!user) {
+      const insert = db.prepare(`
+        INSERT INTO users (email, provider, provider_id) 
+        VALUES (?, 'google', ?)
+      `);
+      const result = insert.run(googleUser.email, googleUser.id);
+      user = { id: result.lastInsertRowid, email: googleUser.email };
+    } else if (user.provider !== "google") {
+      db.prepare(
+        "UPDATE users SET provider = 'google', provider_id = ? WHERE email = ?",
+      ).run(googleUser.id, googleUser.email);
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: "1h" },
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 3600000,
+    });
+
+    res.redirect("http://localhost:5173");
+  } catch (error) {
+    console.error("OAuth2 Google Error:", error);
+    res.redirect("http://localhost:5173?error=oauth_failed");
+  }
+});
+
+router.get("/me", (req, res) => {
+  const token = req.cookies?.token;
+  if (!token) return res.status(401).json({ error: "No session" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    res.json({ user: decoded });
+  } catch {
+    res.status(401).json({ error: "Invalid token" });
+  }
+});
+
 export default router;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -6,23 +6,51 @@ function App() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.SubmitEvent) => {
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setLoggedInUser(data.user.email);
+        }
+      } catch {
+        console.error("No active session");
+      }
+    };
+    checkSession();
+  }, []);
+
+  const handleLocalSubmit = async (e: React.SubmitEvent, isLogin: boolean) => {
     e.preventDefault();
+    const endpoint = isLogin ? "/login" : "/register";
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:5000/api/auth${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
         },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
+      );
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`Logged in user: ${data.user.email}`);
+        if (isLogin) {
+          setLoggedInUser(data.user.email);
+          setMessage("");
+        } else {
+          setMessage(data.message);
+          setIsRegistering(false);
+        }
       } else {
         setMessage(`Error: ${data.error}`);
       }
@@ -31,27 +59,25 @@ function App() {
     }
   };
 
-  const handleRegister = async (e: React.SubmitEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage(data.message);
-        setIsRegistering(false);
-        setPassword("");
-      } else {
-        setMessage(`Registration error: ${data.error}`);
-      }
-    } catch {
-      setMessage("Error connecting to a server");
-    }
+  const handleGoogleLogin = () => {
+    globalThis.location.href = "http://localhost:5000/api/auth/google";
   };
+
+  if (loggedInUser) {
+    return (
+      <div style={{ padding: "2rem" }}>
+        <h2>Zalogowano jako: {loggedInUser}</h2>
+        <button
+          onClick={() => {
+            document.cookie = "token=; Max-Age=0; path=/;";
+            setLoggedInUser(null);
+          }}
+        >
+          Wyloguj
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -65,7 +91,7 @@ function App() {
         }}
       >
         <form
-          onSubmit={isRegistering ? handleRegister : handleLogin}
+          onSubmit={(e) => handleLocalSubmit(e, !isRegistering)}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -92,6 +118,21 @@ function App() {
             {isRegistering ? "Zarejestruj się" : "Zaloguj się"}
           </button>
         </form>
+
+        <div style={{ marginTop: "2rem" }}>
+          <button
+            onClick={handleGoogleLogin}
+            style={{
+              padding: "0.25rem",
+              backgroundColor: "#062fe4",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Zaloguj się przez Google
+          </button>
+        </div>
 
         {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
 
