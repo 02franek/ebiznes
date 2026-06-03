@@ -63,6 +63,10 @@ function App() {
     globalThis.location.href = "http://localhost:5000/api/auth/google";
   };
 
+  const handleGithubLogin = () => {
+    globalThis.location.href = "http://localhost:5000/api/auth/github";
+  };
+
   if (loggedInUser) {
     return (
       <div style={{ padding: "2rem" }}>
@@ -124,6 +128,7 @@ function App() {
             onClick={handleGoogleLogin}
             style={{
               padding: "0.25rem",
+              margin: "0.25rem",
               backgroundColor: "#062fe4",
               color: "white",
               border: "none",
@@ -131,6 +136,19 @@ function App() {
             }}
           >
             Zaloguj się przez Google
+          </button>
+          <button
+            onClick={handleGithubLogin}
+            style={{
+              padding: "0.25rem",
+              margin: "0.25rem",
+              backgroundColor: "#373944",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Zaloguj się przez Githuba
           </button>
         </div>
 
