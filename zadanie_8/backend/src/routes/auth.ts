@@ -49,4 +49,37 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/register/", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "No email or password provided" });
+    }
+
+    const existingUser = db
+      .prepare("SELECT id FROM users WHERE email = ?")
+      .get(email);
+    if (existingUser) {
+      return res
+        .status(409)
+        .json({ error: "Account with provided email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const insert = db.prepare(
+      "INSERT INTO users (email, password) VALUES (?, ?)",
+    );
+    insert.run(email, hashedPassword);
+
+    res
+      .status(201)
+      .json({ message: "Registered successfully. You may log in now" });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 export default router;

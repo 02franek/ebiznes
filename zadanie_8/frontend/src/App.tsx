@@ -5,8 +5,9 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.SubmitEvent) => {
     e.preventDefault();
 
     try {
@@ -30,9 +31,31 @@ function App() {
     }
   };
 
+  const handleRegister = async (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(data.message);
+        setIsRegistering(false);
+        setPassword("");
+      } else {
+        setMessage(`Registration error: ${data.error}`);
+      }
+    } catch {
+      setMessage("Error connecting to a server");
+    }
+  };
+
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Logowanie do aplikacji</h2>
+      <h2>{isRegistering ? "Rejestracja" : "Logowanie"}</h2>
       <div
         style={{
           display: "flex",
@@ -42,7 +65,7 @@ function App() {
         }}
       >
         <form
-          onSubmit={handleLogin}
+          onSubmit={isRegistering ? handleRegister : handleLogin}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -65,10 +88,32 @@ function App() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Zaloguj się</button>
+          <button type="submit">
+            {isRegistering ? "Zarejestruj się" : "Zaloguj się"}
+          </button>
         </form>
 
         {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
+
+        <div style={{ marginTop: "2rem" }}>
+          <button
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+              setMessage("");
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "cyan",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            {isRegistering
+              ? "Masz już konto? Zaloguj się"
+              : "Nie masz konta? Zarejestruj się"}
+          </button>
+        </div>
       </div>
     </div>
   );
