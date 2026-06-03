@@ -72,9 +72,17 @@ function App() {
       <div style={{ padding: "2rem" }}>
         <h2>Zalogowano jako: {loggedInUser}</h2>
         <button
-          onClick={() => {
-            document.cookie = "token=; Max-Age=0; path=/;";
-            setLoggedInUser(null);
+          onClick={async (e) => {
+            e.preventDefault();
+            try {
+              await fetch("http://localhost:5000/api/auth/logout", {
+                method: "POST",
+                credentials: "include",
+              });
+              setLoggedInUser(null);
+            } catch (err) {
+              console.error("Błąd podczas wylogowywania", err);
+            }
           }}
         >
           Wyloguj

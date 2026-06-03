@@ -49,7 +49,16 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/register/", async (req, res) => {
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+  res.json({ message: "Logged out successfully" });
+});
+
+router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -128,15 +137,20 @@ router.get("/google/callback", async (req, res) => {
 
     if (!user) {
       const insert = db.prepare(`
-        INSERT INTO users (email, provider, provider_id) 
-        VALUES (?, 'google', ?)
+        INSERT INTO users (email, provider, provider_id, oauth_token) 
+        VALUES (?, 'google', ?, ?)
       `);
-      const result = insert.run(googleUser.email, googleUser.id);
+      const result = insert.run(
+        googleUser.email,
+        googleUser.id,
+        tokenData.access_token,
+      );
       user = { id: result.lastInsertRowid, email: googleUser.email };
-    } else if (user.provider !== "google") {
+    } else {
       db.prepare(
-        "UPDATE users SET provider = 'google', provider_id = ? WHERE email = ?",
-      ).run(googleUser.id, googleUser.email);
+        "UPDATE users SET provider = 'google', provider_id = ?, oauth_token = ? WHERE email = ?",
+      ).run(googleUser.id, tokenData.access_token, googleUser.email);
+      user = { id: user.id, email: user.email };
     }
 
     const token = jwt.sign(
@@ -231,15 +245,20 @@ router.get("/github/callback", async (req, res) => {
 
     if (!user) {
       const insert = db.prepare(`
-        INSERT INTO users (email, provider, provider_id) 
-        VALUES (?, 'github', ?)
+        INSERT INTO users (email, provider, provider_id, oauth_token) 
+        VALUES (?, 'github', ?, ?)
       `);
-      const result = insert.run(email, githubUser.id.toString());
+      const result = insert.run(
+        email,
+        githubUser.id.toString(),
+        tokenData.access_token,
+      );
       user = { id: result.lastInsertRowid, email };
-    } else if (user.provider !== "github") {
+    } else {
       db.prepare(
-        "UPDATE users SET provider = 'github', provider_id = ? WHERE email = ?",
-      ).run(githubUser.id.toString(), email);
+        "UPDATE users SET provider = 'github', provider_id = ?, oauth_token = ? WHERE email = ?",
+      ).run(githubUser.id.toString(), tokenData.access_token, email);
+      user = { id: user.id, email: user.email };
     }
 
     const token = jwt.sign(
