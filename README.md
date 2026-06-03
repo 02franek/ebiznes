@@ -110,3 +110,17 @@ Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5
 Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
 ##
 
+### Zadanie 8 Klient OAuth2
+
+✅ 3.0 Zaimplementować logowanie przez aplikację serwerową (bez Oauth2) [Link do commita 1](https://github.com/02franek/ebiznes/commit/ea0f7ef8d5636edfe39453cd352deefd5eff96a1)
+
+✅ 3.5 Zaimplementować rejestrację przez aplikację serwerową (bez Oauth2) [Link do commita 2](https://github.com/02franek/ebiznes/commit/d7da6ed671f04cd3a3cc74efff1a6a9c76bf622d)
+
+✅ 4.0 Zaimplementować logowanie via Google OAuth2 [Link do commita 3](https://github.com/02franek/ebiznes/commit/cd3afd630c0a1358f77c30a0da1684ca157c8984)
+
+✅ 4.5 Zaimplementować logowanie via Facebook lub Github OAuth2 [Link do commita 4](https://github.com/02franek/ebiznes/commit/ff8259a032deb985aff953e3915d7af05d75d4ef)
+
+✅ 5.0 Zaimplementować zapisywanie danych logowania OAuth2 po stronie serwera [Link do commita 5](https://github.com/02franek/ebiznes/commit/1dfea3bdf964a54592efc6bfa7b123aa16e4b004)
+###
+Kod: [Link do zadania 8](https://github.com/02franek/ebiznes/tree/main/zadanie_8)
+##
