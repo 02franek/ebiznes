@@ -91,6 +91,7 @@ jobs:
             cd ebiznes
             git checkout main
             git pull origin main
+            cd zadanie_5
 
             sudo docker compose -f docker-compose.prod.yml down
             sudo docker compose -f docker-compose-prod.yml up -d --build
