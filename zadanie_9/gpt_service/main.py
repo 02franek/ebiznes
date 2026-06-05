@@ -1,4 +1,6 @@
 import os
+import random
+import re
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -21,8 +23,35 @@ class ChatRequest(BaseModel):
     message: str
 
 
+HELLOS = [
+    "Cześć, w czym mogę pomóc?",
+    "Witaj w naszym sklepie.",
+    "Hej! Jak mogę pomóc?",
+    "Dzień dobry, czego potrzeba?",
+    "Witaj. Jestem robotem.",
+]
+
+GOODBYES = [
+    "Dziękuję za wizytę.",
+    "Żegnaj",
+    "Do widzenia.",
+    "Dziękujemy i zapraszamy ponownie",
+    "Dzięki za rozmowę. Powodzenia w zakupach.",
+]
+
+
 @app.post("/api/chat")
 async def chat_with_llm(request: ChatRequest):
+    user_text = request.message.strip().lower()
+
+    if re.search(r"\n(cześć|hej|witaj|dzień dobry)\b", user_text):
+        return {"reply": random.choice(HELLOS)}
+
+    if re.search(
+        r"\b(pa|do widzenia|żegnaj|żegnam|dobranoc|do zobaczenia)\b", user_text
+    ):
+        return {"reply": random.choice(GOODBYES)}
+
     response = await client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": request.message}],
