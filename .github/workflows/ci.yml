@@ -93,5 +93,7 @@ jobs:
             git pull origin main
             cd zadanie_5
 
+            echo "VITE_API_URL=http://${{ secrets.AWS_HOST }}:3001/api" > client/.env.production
+
             sudo docker compose -f docker-compose.prod.yml down
             sudo docker compose -f docker-compose.prod.yml up -d --build
