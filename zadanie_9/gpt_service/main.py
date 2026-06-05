@@ -2,10 +2,17 @@ import os
 import random
 import re
 
+import numpy as np
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from groq import AsyncGroq
 from pydantic import BaseModel
+from sentence_transformers import SentenceTransformer
+
+
+class ChatRequest(BaseModel):
+    message: str
+
 
 load_dotenv()
 
@@ -18,9 +25,22 @@ client = AsyncGroq(api_key=api_key)
 
 app = FastAPI()
 
+print("Loading semantic model...")
+embedder = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+print("Model loaded.")
 
-class ChatRequest(BaseModel):
-    message: str
+SHOP_DOMAIN_TEXT = "Pytania o zakupy, elektronikę, artykuły domowe, zabawki dla dzieci, gry video, sprzęt sportowy, jedzenie, ceny, dostępność produktów, wysyłkę, dostawę i sklep."
+
+SHOP_EMBEDDING = embedder.encode(SHOP_DOMAIN_TEXT)
+
+
+def is_semantically_related(text: str, threshold: float = 0.25) -> bool:
+    text_embedding = embedder.encode(text)
+    similarity = np.dot(SHOP_EMBEDDING, text_embedding) / (
+        np.linalg.norm(SHOP_EMBEDDING) * np.linalg.norm(text_embedding)
+    )
+    print(f"Semantyka dla '{text}' -> Wynik: {similarity:.3f}")
+    return similarity >= threshold
 
 
 HELLOS = [
@@ -51,13 +71,18 @@ Odpowiadaj zwięźle i po polsku.
 async def chat_with_llm(request: ChatRequest):
     user_text = request.message.strip().lower()
 
-    if re.search(r"\n(cześć|hej|witaj|dzień dobry)\b", user_text):
+    if re.search(r"\b(cześć|hej|witaj|dzień dobry)\b", user_text):
         return {"reply": random.choice(HELLOS)}
 
     if re.search(
         r"\b(pa|do widzenia|żegnaj|żegnam|dobranoc|do zobaczenia)\b", user_text
     ):
         return {"reply": random.choice(GOODBYES)}
+
+    if not is_semantically_related(user_text):
+        return {
+            "reply": "Przykro mi, ale Twoje pytanie zostało oznaczone jako niepowiązane z tematyką naszego sklepu. Spróbuj ponownie."
+        }
 
     response = await client.chat.completions.create(
         model="llama-3.1-8b-instant",
