@@ -71,3 +71,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Deploy to AWS
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect via SSH and deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USERNAME }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            if [[ ! -d "ebiznes" ]]; then
+              git clone https://github.com/02franek/ebiznes.git ebiznes
+            fi
+
+            cd ebiznes
+            git checkout main
+            git pull origin main
+
+            sudo docker compose -f docker-compose.prod.yml down
+            sudo docker compose -f docker-compose-prod.yml up -d --build
