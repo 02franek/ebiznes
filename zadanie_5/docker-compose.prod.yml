@@ -1,0 +1,20 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    container_name: ebiznes_server_prod
+    restart: always
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+    container_name: ebiznes_client_prod
+    depends_on:
+      - server
+    restart: always
