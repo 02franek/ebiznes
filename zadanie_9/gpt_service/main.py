@@ -39,6 +39,13 @@ GOODBYES = [
     "Dzięki za rozmowę. Powodzenia w zakupach.",
 ]
 
+SYSTEM_PROMPT = """
+Jesteś wirtualnym asystentem w sklepie wielobranżowym. Twój asortyment to: elektronika, artykuły domowe, produkty dla dzieci, sprzęt sportowy, gry wideo oraz żywność.
+Twoim JEDYNYM zadaniem jest doradzanie klientom w sprawach zakupów, produktów z tej kategorii oraz działania sklepu.
+Bezwzględna zasada: Nie wolno ci rozmawiać na tematy niezwiązane ze sklepem (polityka, pogoda, historia, żarty itd.). Jeśli użytkownik zapyta o coś spoza twojej domeny, odmów grzecznie.
+Odpowiadaj zwięźle i po polsku.
+"""
+
 
 @app.post("/api/chat")
 async def chat_with_llm(request: ChatRequest):
@@ -54,7 +61,10 @@ async def chat_with_llm(request: ChatRequest):
 
     response = await client.chat.completions.create(
         model="llama-3.1-8b-instant",
-        messages=[{"role": "user", "content": request.message}],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": request.message},
+        ],
     )
 
     reply = response.choices[0].message.content
