@@ -9,6 +9,8 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
+import io.ktor.client.statement.*
+
 
 @Serializable
 data class DiscordMessage(val content: String)
@@ -35,7 +37,7 @@ class DiscordBot(private val token: String) {
             launch {
                 while (isActive) {
                     delay(heartbeatInterval)
-                send    (Frame.Text("""{"op": 1, "d": null}"""))
+                    send(Frame.Text("""{"op": 1, "d": null}"""))
                 }
             }
 
@@ -89,6 +91,27 @@ class DiscordBot(private val token: String) {
             header(HttpHeaders.Authorization, "Bot $token")
             contentType(ContentType.Application.Json)
             setBody(DiscordMessage(text))
+        }
+    }
+
+    suspend fun askPythonGPTService(message: String): String {
+        return try {
+            val response: HttpResponse = client.post("http://localhost:8000/api/chat") {
+                contentType(ContentType.Application.Json)
+                setBody(buildJsonObject { put("message", message) })
+            }
+
+            if (!response.status.isSuccess()) {
+                println("GPT Service Error: ${response.status} - ${response.bodyAsText()}")
+                return "I am currently unable to respond. Please try again later"
+            }
+
+            val responseBody = response.bodyAsText()
+            val jsonElements = Json.parseToJsonElement(responseBody).jsonObject
+            jsonElements["reply"]?.jsonPrimitive?.content ?: "Error parsing Python GPT Service response"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Error connecting to Python GPT Service"
         }
     }
 }
