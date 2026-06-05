@@ -1,0 +1,58 @@
+name: CI Pipeline Zadanie 10
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build_backend:
+    name: Build Go Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+      - name: Download code
+        uses: actions/checkout@v4
+
+      - name: Configure Go environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Download dependencies
+        run: go mod tidy
+
+      - name: Run Go tests
+        run: go test -v ./...
+
+      - name: Building binary
+        run: go build -o api-server main.go
+
+  build-frontend:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+      - name: Download code
+        uses: actions/checkout@v4
+
+      - name: Configure Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        uses: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build static app
+        run: npm run build
