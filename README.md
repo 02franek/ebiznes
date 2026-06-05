@@ -124,3 +124,18 @@ Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5
 ###
 Kod: [Link do zadania 8](https://github.com/02franek/ebiznes/tree/main/zadanie_8)
 ##
+
+### Zadanie 9 Integracja LLM z botem Discordowym (z Zadania 3)
+
+✅ 3.0 Należy stworzyć po stronie serwerowej osobny serwis do łącznia z chatGPT [Link do commita 1](https://github.com/02franek/ebiznes/commit/42d9f8111d28fde0c72836eaa79a698516cdcbfe)
+
+✅ 3.5 Należy połączyć serwis z interfejsem frontendowym via serwis w Kotlinie (zadanie 3) - discord + JS [Link do commita 2](https://github.com/02franek/ebiznes/commit/b103618086b095531c693d4980f11ab629ca0f54) [Link do commita 3](https://github.com/02franek/ebiznes/commit/00c25915dd8d1c9250155561717aa2f07cfb1901)
+
+✅ 4.0 Należy stworzyć listę 5 różnych otwarć oraz zamknięć rozmowy [Link do commita 4](https://github.com/02franek/ebiznes/commit/29ab06e3a773c8393c523a041db79e1c0882c833)
+
+✅ 4.5 Zaimplementować filtrowanie po zagadnieniach związanych ze sklepem (np. ograniczenie się jedynie do ubrań oraz samego sklepu) do GPT [Link do commita 5](https://github.com/02franek/ebiznes/commit/d35a420ce1a26fe8c50c991632eb7e734a65364f)
+
+✅ 5.0 Zaimplementować filtrowanie odpowiedzi po sentymencie [Link do commita 6](https://github.com/02franek/ebiznes/commit/d4d4db35105544b19d3ea081d5b3675490e61729)
+###
+Kod: [Link do zadania 9](https://github.com/02franek/ebiznes/tree/main/zadanie_9/gpt_service)
+##
