@@ -74,10 +74,17 @@ class DiscordBot(private val token: String) {
                         val channelId = data?.get("channel_id")?.jsonPrimitive?.content
                         
                         if (!isBot && content != null && channelId != null) {
-                            val responseText = messageHandler.handle(content)
+                            if (content.lowercase().startsWith("!ask")) {
+                                val userQuery = content.substring(5).trim()
+                                println("Zapytanie z Discorda do GPT: $userQuery")
+                                val gptResponse = askPythonGPTService(userQuery)
+                                sendMessage(channelId, gptResponse)
+                            } else {
+                                val responseText = messageHandler.handle(content)
                             
-                            if (responseText != null) {
-                                sendMessage(channelId, responseText)
+                                if (responseText != null) {
+                                    sendMessage(channelId, responseText)
+                                }
                             }
                         }
                     }
