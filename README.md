@@ -139,3 +139,18 @@ Kod: [Link do zadania 8](https://github.com/02franek/ebiznes/tree/main/zadanie_8
 ###
 Kod: [Link do zadania 9](https://github.com/02franek/ebiznes/tree/main/zadanie_9/gpt_service)
 ##
+
+### Zadanie 10 Wdrożenie w chmurze (aplikacji z Zadania 5)
+
+✅ 3.0 Należy stworzyć odpowiednie instancje po stronie chmury na dockerze [Link do commita 1](https://github.com/02franek/ebiznes/commit/426afd6388bac179ac76daca54d927f1c8bec29a)
+
+✅ 3.5 Stworzyć odpowiedni pipeline w Github Actions do budowania aplikacji [Link do commita 2](https://github.com/02franek/ebiznes/commit/491bfe54ccc2336cd5c9cd594e022b2def655bd2) [Link do commita 3](https://github.com/02franek/ebiznes/commit/07c3f0d111a880ca89cb5d0531852c072e42b07c) [Link do commita 4](https://github.com/02franek/ebiznes/commit/06755ef1cb8dde7dfd103b96c3c31293bbfad392)
+
+✅ 4.0 Dodać notyfikację mailową o wynikach z sonara [Link do commita 5](https://github.com/02franek/ebiznes/commit/04feaaa2c75b33ba64e37717e6177e475a8336b4) [Link do commita 6](https://github.com/02franek/ebiznes/commit/ca10e4890d3eb49168e63cb85448ab8050399ae9)
+
+✅ 4.5 Dodać krok z deploymentem aplikacji klienckiej na chmurę [Link do commita 7](https://github.com/02franek/ebiznes/commit/32d8d78894036242122e2a1a1c74abb06a495383), ..., [Link do commita 13](https://github.com/02franek/ebiznes/commit/a39f4723749d4e9a76fc047ae0de484e56954cdc)
+
+❌ 5.0 Dodać uruchomienie regresyjnych testów automatycznych (funkcjonalnych) jako krok w Actions w Browserstacku
+###
+Kod: [Link do zadania 5](https://github.com/02franek/ebiznes/tree/main/zadanie_5)
+##
